@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Invoice System</title>
+</head>
+
+<body>
+
+<h1>Invoice System</h1>
+
+<input id="customer" placeholder="Customer">
+
+<button onclick="save()">Save Invoice</button>
+
+<h3>Invoices</h3>
+<div id="list"></div>
+
+<script>
+const API = "http://localhost:5000";
+
+async function save() {
+  await fetch(API + "/invoice", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      customer: document.getElementById("customer").value,
+      items: [],
+      total: 100
+    })
+  });
+
+  load();
+}
+
+async function load() {
+  let res = await fetch(API + "/invoices");
+  let data = await res.json();
+
+  document.getElementById("list").innerHTML =
+    data.map(i => `<p>${i.customer} - ${i.total}</p>`).join("");
+}
+
+load();
+</script>
+
+</body>
+</html>
